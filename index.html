@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Forza Horizon 4: Параметры тюнинга</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            padding: 20px;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        #input_front {
+            margin-top: 20px;
+            margin-left: 10px;
+            font-size: 14pt;
+        }
+
+        #input_front_lb {
+            font-size: 18pt;
+        }
+
+        .frames {
+            margin-top: 40px;
+
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        .wrapper {
+            width: 200px;
+            margin-right: 50px;
+            margin-bottom: 50px;
+        }
+
+        h3 {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .inp_wrap {
+            display: flex;
+            justify-content: space-evenly;
+        }
+
+        .p_inp {
+            text-align: center;
+        }
+
+        .inp_lb {
+            display: block;
+        }
+
+        input {
+            width: 45px;
+        }
+
+        hr {
+            margin: 10px 0;
+        }
+
+        .p-out {
+            margin-left: 20px;
+        }
+
+        .formula_out {
+            margin-left: 10px;
+
+            font-weight: 500;
+            font-size: 20pt;
+        }
+    </style>
+</head>
+<body>
+    <h1>Forza Horizon 4: Параметры тюнинга</h1>
+    <hr>
+
+    <div>
+        <label for="input_front" id="input_front_lb">Фронтальная нагрузка:</label>
+        <input type="number" value="50" id="input_front" min="1" max="99">
+    </div>
+    <div class="frames">
+        <div class="wrapper">
+            <h3>Попер. стабил-ры</h3>
+
+            <div class="inp_wrap">
+                <p class="p_inp">
+                    <label for="inp_min_1" class="inp_lb">Мин</label>
+                    <input type="number" value="1" id="inp_min_1" min="1" max="500">
+                </p>
+                <p class="p_inp">
+                    <label for="inp_max_1" class="inp_lb">Макс</label>
+                    <input type="number" value="65" id="inp_max_1" min="1" max="500">
+                </p>
+            </div>
+
+            <hr>
+
+            <p class="p-out">Передние: <span id="formula_out_1_1" class="formula_out">20</span></p>
+            <p class="p-out">Задние: <span id="formula_out_2_1" class="formula_out">18</span></p>
+        </div>
+
+        <div class="wrapper">
+            <h3>Пружины</h3>
+
+            <div class="inp_wrap">
+                <p class="p_inp">
+                    <label for="inp_min_2" class="inp_lb">Мин</label>
+                    <input type="number" value="40" id="inp_min_2" min="1" max="500">
+                </p>
+                <p class="p_inp">
+                    <label for="inp_max_2" class="inp_lb">Макс</label>
+                    <input type="number" value="200" id="inp_max_2" min="1" max="500">
+                </p>
+            </div>
+
+            <hr>
+
+            <p class="p-out">Передние: <span id="formula_out_1_2" class="formula_out">...</span></p>
+            <p class="p-out">Задние: <span id="formula_out_2_2" class="formula_out">...</span></p>
+        </div>
+
+        <div class="wrapper">
+            <h3>Отбой</h3>
+
+            <div class="inp_wrap">
+                <p class="p_inp">
+                    <label for="inp_min_3" class="inp_lb">Мин</label>
+                    <input type="number" value="40" id="inp_min_3" min="1" max="500">
+                </p>
+                <p class="p_inp">
+                    <label for="inp_max_3" class="inp_lb">Макс</label>
+                    <input type="number" value="200" id="inp_max_3" min="1" max="500">
+                </p>
+            </div>
+
+            <hr>
+
+            <p class="p-out">Передние: <span id="formula_out_1_3" class="formula_out">...</span></p>
+            <p class="p-out">Задние: <span id="formula_out_2_3" class="formula_out">...</span></p>
+        </div>
+    </div>
+
+    <script>
+        var input_front;
+
+        var inp_min_1;
+        var inp_max_1;
+        var formula_out_1_1;
+        var formula_out_2_1;
+
+        var inp_min_2;
+        var inp_max_2;
+        var formula_out_1_2;
+        var formula_out_2_2;
+
+        var inp_min_3;
+        var inp_max_3;
+        var formula_out_1_3;
+        var formula_out_2_3;
+
+        function check_input(element, min, max) {
+            element.value = Number(element.value);
+
+            if (Number(element.value) < min) {
+                element.value = min;
+            } else if (Number(element.value) > max) {
+                element.value = max;
+            }
+        }
+
+        function formula_base(element, inp_min, inp_max, formula_out_1, formula_out_2) {
+            check_input(element, 1, 500);
+
+            if (element === inp_min) {
+                if (Number(inp_max.value) < Number(inp_min.value)) {
+                    inp_max.value = inp_min.value;
+                }
+            } else if (element === inp_max) {
+                if (Number(inp_min.value) > Number(inp_max.value)) {
+                    inp_min.value = inp_max.value;
+                }
+            }
+
+            let min = Number(inp_min.value);
+            let max = Number(inp_max.value);
+            let front = Number(input_front.value) / 100;
+
+            formula_out_1.innerHTML = ((max - min) * front + min).toFixed(2);
+            formula_out_2.innerHTML = ((max - min) * (1 - front) + min).toFixed(2);
+        }
+
+        function formula_front() {
+            check_input(input_front, 1, 99);
+
+            formula_1(inp_min_1);
+            formula_2(inp_min_2);
+            formula_3(inp_min_3);
+        }
+
+        function formula_1(element) {
+            formula_base(element, inp_min_1, inp_max_1, formula_out_1_1, formula_out_2_1);
+        }
+
+        function formula_2(element) {
+            formula_base(element, inp_min_2, inp_max_2, formula_out_1_2, formula_out_2_2);
+        }
+
+        function formula_3(element) {
+            formula_base(element, inp_min_3, inp_max_3, formula_out_1_3, formula_out_2_3);
+        }
+
+        window.onload = () => {
+            input_front = document.querySelector("#input_front");
+
+            inp_min_1 = document.querySelector("#inp_min_1");
+            inp_max_1 = document.querySelector("#inp_max_1");
+            formula_out_1_1 = document.querySelector("#formula_out_1_1");
+            formula_out_2_1 = document.querySelector("#formula_out_2_1");
+
+            inp_min_2 = document.querySelector("#inp_min_2");
+            inp_max_2 = document.querySelector("#inp_max_2");
+            formula_out_1_2 = document.querySelector("#formula_out_1_2");
+            formula_out_2_2 = document.querySelector("#formula_out_2_2");
+
+            inp_min_3 = document.querySelector("#inp_min_3");
+            inp_max_3 = document.querySelector("#inp_max_3");
+            formula_out_1_3 = document.querySelector("#formula_out_1_3");
+            formula_out_2_3 = document.querySelector("#formula_out_2_3");
+
+
+            input_front.addEventListener('input', () => formula_front());
+
+            inp_min_1.addEventListener('input', e => formula_1(e.target));
+            inp_max_1.addEventListener('input', e => formula_1(e.target));
+
+            inp_min_2.addEventListener('input', e => formula_2(e.target));
+            inp_max_2.addEventListener('input', e => formula_2(e.target));
+
+            inp_min_3.addEventListener('input', e => formula_3(e.target));
+            inp_max_3.addEventListener('input', e => formula_3(e.target));
+
+            formula_front();
+        }
+    </script>
+</body>
+</html>
